@@ -1,0 +1,13 @@
+service: intro-sls
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-1
+  memorySize: 128
+  timeout: 30
+
+functions:
+  hello:
+    handler: handler.hello
