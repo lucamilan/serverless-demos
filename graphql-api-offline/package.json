@@ -1,0 +1,16 @@
+{
+  "name": "graphql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "graphql": "^0.11.7",
+    "serverless-dynamodb-local": "0.2.26",
+    "serverless-offline": "3.16.0"
+  }
+}

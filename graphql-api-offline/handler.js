@@ -1,6 +1,17 @@
 'use strict'
 const AWS = require('aws-sdk')
-const db = new AWS.DynamoDB.DocumentClient()
+
+let options = {}
+
+// connect to local DB if running offline
+if (process.env.IS_OFFLINE) {
+  options = {
+    region: 'localhost',
+    endpoint: 'http://localhost:8000'
+  }
+}
+
+const db = new AWS.DynamoDB.DocumentClient(options)
 
 const {
   graphql,
@@ -40,7 +51,7 @@ const setKeyValue = (key, info) => {
   const params = {
     TableName: process.env.DB_TABLE,
     Key: { key: key },
-    UpdateExpression: 'SET info = :info',
+    UpdateExpression: 'SET sinfo = :info',
     ExpressionAttributeValues: {
       ':info': info
     }
