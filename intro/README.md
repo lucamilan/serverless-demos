@@ -1,6 +1,9 @@
 # Intro
 A basic serverless service.
-Variables (https://serverless.com/framework/docs/providers/aws/guide/variables/#variables)
+
+* Variables (https://serverless.com/framework/docs/providers/aws/guide/variables/#variables)
+
+# Work with sls CLI
 
 ```bat
 sls #show all commands
@@ -11,10 +14,11 @@ sls info
 sls deploy
 sls invoke -f hello -log
 sls logs -f hello
+sls deploy function -f hello
 sls remove
 ```
 
-New stage
+## Create New stage
 
 ```yml
   stage: ${opt:stage, 'dev'}
