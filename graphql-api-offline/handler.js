@@ -51,7 +51,7 @@ const setKeyValue = (key, info) => {
   const params = {
     TableName: process.env.DB_TABLE,
     Key: { key: key },
-    UpdateExpression: 'SET sinfo = :info',
+    UpdateExpression: 'SET info = :info',
     ExpressionAttributeValues: {
       ':info': info
     }
