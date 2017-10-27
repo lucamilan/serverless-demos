@@ -1,4 +1,4 @@
-service: graphql
+service: graphql-offline
 
 custom:
   dbTable: ${self:service}-${self:provider.stage}

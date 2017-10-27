@@ -1,0 +1,86 @@
+service: step-functions
+
+plugins:
+  - serverless-step-functions
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-1
+  memorySize: 128
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - states:StartExecution
+      Resource:  ${self:resources.Outputs.SemaphoreStateMachineARN.Value}
+
+functions:
+  semaphore:
+    handler: handler.semaphore
+    environment:
+          STATE_MACHINE_ARN: { "Ref": "SemaphoreStateMachine" }
+    events: # The Events that trigger this Function
+      - http:
+          path: semaphore
+          method: get # HTTP method for this endpoint
+          cors: true
+          private: false
+  on-red:
+    handler: handler.red
+  on-green:
+    handler: handler.green
+  on-yellow:
+    handler: handler.yellow
+  on-response:
+    handler: handler.response
+
+stepFunctions:
+  stateMachines:
+    SemaphoreStateMachine:
+      name: SemaphoreStateMachine
+      definition:
+        Comment: "An example of the Amazon States Language using choice state"
+        StartAt: ReadSemaphoreState
+        States:
+          ReadSemaphoreState:
+            Type: Choice
+            Choices:
+            - Variable: "$.color"
+              StringEquals: "red"
+              Next: RedState
+            - Variable: "$.color"
+              StringEquals: "yello"
+              Next: YellowState
+            - Variable: "$.color"
+              StringEquals: "green"
+              Next: GreenState
+            Default: DefaultState
+          RedState:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-red
+            Next: ResponseState
+          GreenState:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-green
+            Next: ResponseState
+          YellowState:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-yellow
+            Next: ResponseState
+          DefaultState:
+            Type: Fail
+            Cause: "No Color Matches!"
+          ResponseState:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-response
+            End: true
+
+resources:
+  Outputs:
+    SemaphoreStateMachineARN:
+      Description: The ARN of the semaphore state machine
+      Value:
+        Ref: SemaphoreStateMachine
