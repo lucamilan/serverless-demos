@@ -1,3 +1,3 @@
 # Step Functions
 
-sls invoke -f semaphore -data='{ "color":"red" }' -log
+sls invoke -f entrypoint -data='{ "color":"red" }' -log

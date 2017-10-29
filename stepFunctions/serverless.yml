@@ -15,17 +15,17 @@ provider:
     - Effect: Allow
       Action:
         - states:StartExecution
-      Resource:  ${self:resources.Outputs.SemaphoreStateMachineARN.Value}
+      Resource:  ${self:resources.Outputs.TrafficLightStateMachineARN.Value}
 
 functions:
-  semaphore:
-    handler: handler.semaphore
+  entrypoint:
+    handler: handler.entrypoint
     environment:
-          STATE_MACHINE_ARN: { "Ref": "SemaphoreStateMachine" }
-    events: # The Events that trigger this Function
+          STATE_MACHINE_ARN: { "Ref": "TrafficLightStateMachine" }
+    events:
       - http:
-          path: semaphore
-          method: get # HTTP method for this endpoint
+          path: trafficlight
+          method: get
           cors: true
           private: false
   on-red:
@@ -39,20 +39,20 @@ functions:
 
 stepFunctions:
   stateMachines:
-    SemaphoreStateMachine:
-      name: SemaphoreStateMachine
+    TrafficLightStateMachine:
+      name: TrafficLightStateMachine
       definition:
-        Comment: "An example of the Amazon States Language using choice state"
-        StartAt: ReadSemaphoreState
+        Comment: "An example of the Amazon States Language"
+        StartAt: ReadState
         States:
-          ReadSemaphoreState:
+          ReadState:
             Type: Choice
             Choices:
             - Variable: "$.color"
               StringEquals: "red"
               Next: RedState
             - Variable: "$.color"
-              StringEquals: "yello"
+              StringEquals: "yellow"
               Next: YellowState
             - Variable: "$.color"
               StringEquals: "green"
@@ -61,14 +61,18 @@ stepFunctions:
           RedState:
             Type: Task
             Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-red
-            Next: ResponseState
+            Next: WaitState
           GreenState:
             Type: Task
             Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-green
-            Next: ResponseState
+            Next: WaitState
           YellowState:
             Type: Task
             Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-on-yellow
+            Next: WaitState
+          WaitState:
+            Type: Wait
+            TimestampPath: "$.wait"
             Next: ResponseState
           DefaultState:
             Type: Fail
@@ -80,7 +84,7 @@ stepFunctions:
 
 resources:
   Outputs:
-    SemaphoreStateMachineARN:
-      Description: The ARN of the semaphore state machine
+    TrafficLightStateMachineARN:
+      Description: The ARN of the Traffic Light state machine
       Value:
-        Ref: SemaphoreStateMachine
+        Ref: TrafficLightStateMachine
