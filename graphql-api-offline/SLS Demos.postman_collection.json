@@ -1,0 +1,33 @@
+{
+	"variables": [],
+	"info": {
+		"name": "SLS Demos",
+		"_postman_id": "f4bcf066-85f9-8614-4464-5478a92cb100",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GraphQL Local - SET KEY",
+			"request": {
+				"url": "http://localhost:3000/graphql?query=mutation {setKey(key:\"Username\", value: \"Luca\")}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Local - GET KEY",
+			"request": {
+				"url": "http://localhost:3000/graphql?query={getKey(key:\"Username\")}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
