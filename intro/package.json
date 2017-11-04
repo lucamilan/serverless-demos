@@ -1,0 +1,14 @@
+{
+  "name": "intro",
+  "version": "1.0.0",
+  "description": "sample",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "node_modules\\.bin\\sls deploy -v"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^1.24.0"
+  }
+}
