@@ -16,6 +16,10 @@ sls invoke -f hello -log
 sls logs -f hello
 sls deploy function -f hello
 sls remove
+
+sls metrics
+sls invoke -f hello --log --data '{"test": "test"}'
+sls logs -f hello --filter Error
 ```
 
 ## Create New stage
