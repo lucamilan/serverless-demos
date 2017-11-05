@@ -22,4 +22,5 @@ module.exports.dynamoAdd = (event, context, callback) => {
 
 module.exports.dynamoListener = (event, context, callback) => {
   console.log('event:', JSON.stringify(event))
+  event.Records.forEach((record) => { console.log('record:', JSON.stringify(record)) })
 }
