@@ -33,6 +33,17 @@ functions:
               - StreamArn
 
 resources:
+  Outputs:
+    DbTableStreamArn:
+      Description: "Db Table Name"
+      Value: 
+        Fn::GetAtt: [ DbTable, StreamArn ]
+      Export:
+        Name: ExportDbTableStreamArn
+    DbTableName:
+      Description: "Db Table Name"
+      Value:
+        Ref: DbTable
   Resources: 
     DbTable:
       Type: 'AWS::DynamoDB::Table'
