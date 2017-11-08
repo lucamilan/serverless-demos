@@ -8,7 +8,6 @@ Test your service locally, without having to deploy it first.
 npm install
 serverless dynamodb install
 serverless offline start
-serverless dynamodb migrate
 ```
 
 # Test
